@@ -6,6 +6,9 @@ HTTP 壳。无数据库、无外部服务,单二进制 + 内嵌字体/贴图。
 
 crate 形态为 lib + bin:`src/lib.rs` 暴露 `pub mod minecraft`(可作库复用),`src/main.rs` 是 API 二进制。
 
+<p align="center"><img src="docs/preview.png" width="380" alt="预览：/list 批量 ping 26 台服务器出的原版列表长图"></p>
+<p align="center"><sub><code>GET /list</code> 批量并行 ping 26 台服务器出的原版列表长图(连不上的也进图)。</sub></p>
+
 ## 运行
 
 ```sh
