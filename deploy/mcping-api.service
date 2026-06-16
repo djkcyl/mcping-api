@@ -1,0 +1,24 @@
+[Unit]
+Description=mcping-api — Minecraft ping/render HTTP API
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+# 把构建出的单个二进制放到这里(自包含,无需 assets 目录)
+ExecStart=/opt/mcping-api/mcping-api
+Environment=BIND=127.0.0.1:8686
+Environment=RUST_LOG=info
+Restart=on-failure
+RestartSec=3
+
+# 加固(无状态、无需写盘,可跑在受限沙箱里)
+DynamicUser=yes
+NoNewPrivileges=yes
+ProtectSystem=strict
+ProtectHome=yes
+PrivateTmp=yes
+RestrictAddressFamilies=AF_INET AF_INET6
+MemoryMax=256M
+
+[Install]
+WantedBy=multi-user.target

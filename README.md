@@ -48,6 +48,29 @@ curl 'http://127.0.0.1:8686/list?hosts=mc.hypixel.net,2b2t.org&names=Hypixel,2b2
 curl 'http://127.0.0.1:8686/list?hosts=mc.hypixel.net,2b2t.org&style=card' -o cards.png
 ```
 
+## 部署(生产)
+
+构建出的二进制**自包含**(字体/贴图经 `include_bytes!` 编译期内嵌),运行时不需要 `assets/` 目录,
+拷一个文件即可跑。
+
+```sh
+cargo build --release                       # → target/release/mcping-api（约 4–5 MB，已 strip）
+install -Dm755 target/release/mcping-api /opt/mcping-api/mcping-api
+```
+
+用仓库自带的 systemd unit([`deploy/mcping-api.service`](deploy/mcping-api.service))拉起(默认只听本机
+`127.0.0.1:8686`,前面挂 Nginx/Caddy 反代):
+
+```sh
+install -Dm644 deploy/mcping-api.service /etc/systemd/system/mcping-api.service
+systemctl daemon-reload && systemctl enable --now mcping-api
+```
+
+调参用环境变量:`BIND`(监听地址,默认 `0.0.0.0:8686`)、`RUST_LOG`(日志级别,默认 `info`)。
+
+> 反代侧建议把读超时设到 ~15s:`/list` 在有连不上的服务器时,单次最坏要等内部 ping 超时(Java 5s +
+> 基岩 3s,各服并行)。
+
 ## 来源
 
 `src/minecraft/` 整体抽自 abot 的 `src/integrations/minecraft/`(纯 Rust、自包含),`assets/minecraft/`

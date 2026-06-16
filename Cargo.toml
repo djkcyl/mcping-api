@@ -29,4 +29,7 @@ tracing-subscriber = { version = "0.3", features = ["env-filter"] }
 
 [profile.release]
 opt-level = 3
-lto = "thin"
+lto = "fat"
+codegen-units = 1
+strip = true
+# 不设 panic = "abort":保留 unwind,让 axum 把单次请求的 panic 兜成 500,不拖垮整个服务。
